@@ -1,0 +1,180 @@
+﻿@page "/registro-productos"
+@rendermode InteractiveServer
+<h3>Registro de productos</h3>
+
+<div class="mb-3">
+    <label class="form-label">No. de inventario</label>
+    <input type="number" class="form-control" @bind="numeroInventario" />
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Descripción</label>
+    <input type="text"
+           class="form-control"
+           placeholder="Escribe la descripción del producto"
+           @bind="descripcion" />
+</div>
+
+<div class="mb-3">
+    <label class="form-label d-block">Departamento</label>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input"
+               type="radio"
+               name="departamentoGroup"
+               id="frutas"
+               value="Frutas"
+               checked="@(departamento == "Frutas")"
+               @onchange='() => departamento = "Frutas"' />
+        <label class="form-check-label" for="frutas">Frutas</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input"
+               type="radio"
+               name="departamentoGroup"
+               id="verduras"
+               value="Verduras"
+               checked="@(departamento == "Verduras")"
+               @onchange='() => departamento = "Verduras"' />
+        <label class="form-check-label" for="verduras">Verduras</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input"
+               type="radio"
+               name="departamentoGroup"
+               id="lacteos"
+               value="Lácteos"
+               checked="@(departamento == "Lácteos")"
+               @onchange='() => departamento = "Lácteos"' />
+        <label class="form-check-label" for="lacteos">Lácteos</label>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(mensajeError))
+{
+    <div class="alert alert-danger my-2" role="alert">
+        @mensajeError
+    </div>
+}
+
+<div class="mb-4">
+    <button class="btn btn-success me-2" @onclick="GuardarDatos">Guardar datos</button>
+    <button class="btn btn-success me-2" @onclick="MostrarListaCompleta">Lista completa</button>
+    <button class="btn btn-success me-2" @onclick='() => FiltrarPorDepartamento("Frutas")'>Lista de frutas</button>
+    <button class="btn btn-success me-2" @onclick='() => FiltrarPorDepartamento("Verduras")'>Lista de verduras</button>
+    <button class="btn btn-success me-2" @onclick='() => FiltrarPorDepartamento("Lácteos")'>Lista de lácteos</button>
+</div>
+
+@if (mostrarLista)
+{
+    <table class="table table-striped table-hover align-middle">
+        <thead>
+            <tr>
+                <th>No. Inventario</th>
+                <th>Descripción</th>
+                <th>Departamento</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            @foreach (var prod in productosMostrados)
+            {
+                <tr>
+                    <td>@prod.NoInventario</td>
+                    <td>@prod.Descripcion</td>
+                    <td>@prod.Departamento</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button class="btn btn-success mt-2" @onclick="CerrarLista">Cerrar lista</button>
+}
+
+@code {
+    private int numeroInventario = 0;
+    private string descripcion = string.Empty;
+    private string departamento = "Frutas";
+    private string mensajeError = string.Empty;
+
+    private List<Producto> listaProductos = new List<Producto>();
+    private List<Producto> productosMostrados = new List<Producto>();
+    private bool mostrarLista = false;
+
+    private void GuardarDatos()
+    {
+        mensajeError = string.Empty;
+
+       
+        bool existe = false;
+        int index = 0;
+        while (index < listaProductos.Count)
+        {
+            if (listaProductos[index].NoInventario == numeroInventario)
+            {
+                existe = true;
+                break;
+            }
+            index++;
+        }
+
+        if (existe)
+        {
+            mensajeError = $"El número de inventario {numeroInventario} ya existe. Debe ser único.";
+            return;
+        }
+
+        
+        listaProductos.Add(new Producto
+        {
+            NoInventario = numeroInventario,
+            Descripcion = descripcion,
+            Departamento = departamento
+        });
+
+       
+        numeroInventario = 0;
+        descripcion = string.Empty;
+        departamento = "Frutas";
+    }
+
+    private void MostrarListaCompleta()
+    {
+        productosMostrados.Clear();
+
+        
+        for (int i = 0; i < listaProductos.Count; i++)
+        {
+            productosMostrados.Add(listaProductos[i]);
+        }
+
+        mostrarLista = true;
+    }
+
+    private void FiltrarPorDepartamento(string deptoFiltro)
+    {
+        productosMostrados.Clear();
+
+        
+        foreach (var prod in listaProductos)
+        {
+            if (prod.Departamento == deptoFiltro)
+            {
+                productosMostrados.Add(prod);
+            }
+        }
+
+        mostrarLista = true;
+    }
+
+    private void CerrarLista()
+    {
+        mostrarLista = false;
+    }
+
+    public class Producto
+    {
+        public int NoInventario { get; set; }
+        public string Descripcion { get; set; } = string.Empty;
+        public string Departamento { get; set; } = string.Empty;
+    }
+}

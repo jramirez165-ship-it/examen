@@ -1,0 +1,87 @@
+﻿@page "/ciclos2"
+@rendermode InteractiveServer
+
+<h3>Ciclos: Pares e Impares</h3>
+
+<div class="row mb-3">
+    <div class="col-2">
+        <label for="numero" class="form-label">Número:</label>
+    </div>
+    <div class="col-auto">
+        <input type="number" id="numero" class="form-control" @bind="numero" />
+    </div>
+</div>
+
+<button class="btn btn-primary mb-4" @onclick="Calcular">Calcular</button>
+
+<div class="row">
+    
+    <div class="col-md-6">
+        <h4>Pares</h4>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Número Par</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var par in pares)
+                {
+                    <tr>
+                        <td>@par</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+  
+    <div class="col-md-6">
+        <h4>Impares</h4>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Número Impar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var impar in impares)
+                {
+                    <tr>
+                        <td>@impar</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    private int numero;
+    private List<int> pares = new();
+    private List<int> impares = new();
+
+    private void Calcular()
+    {
+       
+        pares.Clear();
+        impares.Clear();
+
+        int indice = 0;
+
+        while (indice <= numero)
+        {
+            
+            if (indice % 2 == 0)
+            {
+                pares.Add(indice);
+            }
+            else
+            {
+                impares.Add(indice);
+            }
+
+            indice++;
+        }
+    }
+}

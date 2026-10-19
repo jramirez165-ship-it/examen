@@ -1,0 +1,51 @@
+﻿@page "/component"
+
+<h3>Verificador de número par o impar</h3>
+
+<div class="verificador">
+    <label for="numero">Número:</label>
+    <InputNumber @bind-Value="Numero" id="numero" class="input-number" />
+
+    <button class="btn" @onclick="Verificar">Verificar</button>
+
+    @if (ResultadoVisible)
+    {
+        <p class="resultado" style="color:@ResultadoColor">El número @Numero es @ResultadoTexto.</p>
+    }
+</div>
+
+@code {
+    private int? Numero { get; set; }
+    private bool ResultadoVisible { get; set; }
+    private string ResultadoTexto => (Numero.HasValue && Numero % 2 == 0) ? "PAR" : "IMPAR";
+    private string ResultadoColor => (Numero.HasValue && Numero % 2 == 0) ? "blue" : "red";
+
+    private void Verificar()
+    {
+        ResultadoVisible = Numero.HasValue;
+    }
+}
+
+<style>
+    .verificador {
+        font-family: Arial, sans-serif;
+        margin: 20px 0;
+    }
+
+    .input-number {
+        margin-left: 8px;
+        width: 120px;
+    }
+
+    .btn {
+        margin-left: 10px;
+        padding: 6px 12px;
+        cursor: pointer;
+    }
+
+    .resultado {
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 12px;
+    }
+</style>

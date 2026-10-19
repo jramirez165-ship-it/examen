@@ -1,0 +1,27 @@
+﻿@page "/counter"
+@rendermode InteractiveServer
+
+<PageTitle>Par o Impar</PageTitle>
+
+<h1>Verificador de número par o impar</h1>
+
+<div class="verificador">
+    <label for="numero">Número:</label>
+    <InputNumber id="numero" @bind-Value="Numero" class="input-number" />
+
+    @if (Numero.HasValue)
+    {
+        <p class="resultado" style="color:@(IsEven ? "blue" : "red")">El número @Numero es @(IsEven ? "PAR" : "IMPAR").</p>
+    }
+    else
+    {
+        <p class="ayuda">Introduce un número para comprobar si es par o impar.</p>
+    }
+</div>
+
+@code {
+    private int? Numero { get; set; }
+    private bool IsEven => Numero.HasValue && Numero % 2 == 0;
+}
+
+
